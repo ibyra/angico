@@ -2,6 +2,8 @@
 
 A small JSX async-rendering library.
 
+## [![View on NPM](https://img.shields.io/npm/v/%40ibyra%2Fangico?style=flat-square)](https://www.npmjs.com/package/%40ibyra%2Fangico) [![License](https://img.shields.io/npm/l/immutable-cpf?style=flat-square)](https://github.com/ibyra)
+
 ## Installation
 
 Use the `npm` package manager or `bun` runtime to install Immutable CPF
@@ -107,7 +109,7 @@ console.log(box); // FunctionElement { ... }
 
 As you can see, the JSX does not return an rendered version, but a instance of
 `FunctionElement`. This is because Angico does not renders anything immediately,
-only when it is request.
+only when it is required to do so.
 
 You can request an JSX element to render into a string using the `render`
 function, also available on Angico package.
@@ -179,6 +181,34 @@ export function EnvelopeSimple(props: IconProps): JSX.Element {
 > The current support for SVG is limited, only a few elements/attributes are
 > defined. We aim to improve the support in the future.
 
+## Extending the definitions
+
+Sometimes you want to extend the definitions of the `JSX` available intrinsic
+elements; e.g, when you are using an attribute-based JS library like
+[HTMX][htmx] or [Alpine.js][alphine.js], or when you have some
+[custom elements][custom-elements] in your markup. You can extend the
+`JSX.IntrinsicElements` or `HTMLAttributes` interfaces with your custom
+definitions.
+
+```ts
+declare global {
+  namespace JSX {
+    interface HTMLAttributes {
+      // HTMX attributes
+      [hx: `hx-${string}`]: string | boolean;
+    }
+
+    interface OpenableAttributes extends HTMLAttributes {
+      open?: boolean;
+    }
+
+    interface IntrinsicElements {
+      ['my-custom-component']: OpenableAttributes;
+    }
+  }
+}
+```
+
 ## Roadmap
 
 - Support all SVG-related tags/attributes;
@@ -195,3 +225,6 @@ Please make sure to update tests as appropriate.
 MIT © [Ibyra](https://github.com/ibyra)
 
 [babel-jsx]: https://babeljs.io/docs/babel-plugin-transform-react-jsx
+[htmx]: https://htmx.org/
+[alphine.js]: https://alpinejs.dev/
+[custom-elements]: https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements
