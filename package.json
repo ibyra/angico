@@ -1,0 +1,62 @@
+{
+  "name": "@ibyra/angico",
+  "version": "0.0.1",
+  "author": "Ibyra",
+  "description": "A small JSX rendering library.",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "default": "./dist/index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ibyra/angico.git"
+  },
+  "keywords": [
+    "cpf",
+    "immutable"
+  ],
+  "bugs": {
+    "url": "https://github.com/ibyra/angico/issues"
+  },
+  "homepage": "https://github.com/ibyra/angico#readme",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "test": "bun test --coverage",
+    "format": "prettier ./src/**/*.{ts,tsx} --ignore-path .gitignore --write",
+    "lint": "eslint src/**/*.{ts,tsx} --ignore-path .gitignore",
+    "docs": "typedoc src/index.ts --plugin typedoc-plugin-markdown --disableSources --readme none",
+    "release": "bun run build && changeset publish"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.20"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "bun-plugin-dts": "^0.2.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.2",
+    "prettier": "^3.1.1",
+    "tsup": "^8.0.1",
+    "typedoc": "^0.25.3",
+    "typedoc-plugin-markdown": "^3.17.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
