@@ -26,8 +26,9 @@
     "url": "git+https://github.com/ibyra/angico.git"
   },
   "keywords": [
-    "cpf",
-    "immutable"
+    "javascript",
+    "typescript",
+    "jsx"
   ],
   "bugs": {
     "url": "https://github.com/ibyra/angico/issues"

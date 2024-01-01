@@ -2,18 +2,20 @@
 
 A small JSX async-rendering library.
 
-## [![View on NPM](https://img.shields.io/npm/v/%40ibyra%2Fangico?style=flat-square)](https://www.npmjs.com/package/%40ibyra%2Fangico) [![License](https://img.shields.io/npm/l/immutable-cpf?style=flat-square)](https://github.com/ibyra)
+## [![View on NPM](https://img.shields.io/npm/v/%40ibyra%2Fangico?style=flat-square)](https://www.npmjs.com/package/%40ibyra%2Fangico) [![License](https://img.shields.io/npm/l/%40ibyra%2Fangico?style=flat-square)](https://github.com/ibyra)
 
 ## Installation
 
-Use the `npm` package manager or `bun` runtime to install Immutable CPF
+Use the `npm` package manager or `bun` runtime to install Angico
 
 ```bash
 npm i @ibyra/angico
 bun i @ibyra/angico
 ```
 
-## Configuration
+## Usage
+
+### Setting up the configuration
 
 Firstly, you'll need to configure your JSX transformer to use Angico.
 
@@ -41,7 +43,7 @@ var descriptions = items.map((item) => (
 ));
 ```
 
-## Usage
+### Authoring JSX
 
 After setting up the configuration, using Angico is very similar to any other
 JSX library. You can create and compose your components/fragments, even if they
@@ -88,6 +90,8 @@ console.log(box); // FunctionElement { ... }
 As you can see, the JSX does not return an rendered version, but a instance of
 `FunctionElement` instead. This is because Angico does not renders anything
 immediately, only when it is required to do so.
+
+### Rendering JSX into a string
 
 You can request an JSX element to render into a string using the `render`
 function, also available on Angico package.
@@ -155,7 +159,7 @@ export function EnvelopeSimple(props: IconProps): JSX.Element {
 > The current support for SVG is limited, only a few elements/attributes are
 > defined. We aim to improve the support in the future.
 
-## Extending the definitions
+### Extending type definitions
 
 Sometimes you want to extend the definitions of the `JSX` available intrinsic
 elements; e.g, when you are using an attribute-based JS library like
@@ -186,6 +190,7 @@ declare global {
 ## Roadmap
 
 - Support all SVG-related tags/attributes;
+- Support streamed rendering;
 
 ## Contributing
 
