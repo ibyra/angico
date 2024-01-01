@@ -4,9 +4,8 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleDetection": "force",
-    "jsx": "react",
-    "jsxFactory": "Angico.createElement",
-    "jsxFragmentFactory": "Angico.Fragment",
+    "jsx": "react-jsx",
+    "jsxImportSource": ".",
     "allowJs": true,
 
     /* Bundler mode */
