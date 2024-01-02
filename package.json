@@ -2,7 +2,7 @@
   "name": "@ibyra/angico",
   "version": "0.0.1",
   "author": "Ibyra",
-  "description": "A small JSX rendering library.",
+  "description": "A small JSX async-rendering library.",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",
