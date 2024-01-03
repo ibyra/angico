@@ -1,5 +1,11 @@
 # @ibyra/angico
 
+## 1.0.2
+
+### Patch Changes
+
+- 1af32a4: Fix package exports
+
 ## 1.0.1
 
 ### Patch Changes
