@@ -1,5 +1,11 @@
 # @ibyra/angico
 
+## 1.0.3
+
+### Patch Changes
+
+- b74d711: Improve SVG typings
+
 ## 1.0.2
 
 ### Patch Changes
