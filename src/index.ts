@@ -1,7 +1,7 @@
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
-    // Base types
+    // Helper types
 
     type StringNumber = `${number}` | number;
 
@@ -11,7 +11,7 @@ declare global {
 
     type OptionalPrefixToken<T extends string> = `${T} ` | '';
 
-    // HTML Enums
+    // HTML Enums types
 
     type AutoFill =
       | AutoFillBase
@@ -1295,30 +1295,27 @@ declare global {
           | Iterable<Value>
         >;
 
-    type Child = Value | Element;
+    type Children = Value | Element | Iterable<Children>;
 
-    type Children = Array<Child>;
+    type Props = { [key: string]: unknown } & { children?: Children };
 
-    type FragmentElement = {
-      children: Children;
-      render(): Promise<string>;
-    };
+    type FC<P extends JSX.Props = JSX.Props> = (props: P) => JSX.Element;
+
+    type FunctionComponent<P extends JSX.Props = JSX.Props> = FC<P>;
 
     type FunctionElement = {
-      children: Children;
-      props: Record<string, unknown>;
-      function: (props: Record<string, unknown>) => Element;
+      props: Props;
+      fn: (props: { [key: string]: unknown }) => Element;
       render(): Promise<string>;
     };
 
     type IntrinsicElement = {
-      children: Children;
-      props: Record<string, JSX.Value>;
+      props: Props;
       tag: string;
       render(): Promise<string>;
     };
 
-    type SyncElement = FragmentElement | FunctionElement | IntrinsicElement;
+    type SyncElement = FunctionElement | IntrinsicElement;
 
     type AsyncElement = Promise<SyncElement>;
 
@@ -1327,35 +1324,19 @@ declare global {
 }
 
 /**
- * Represents a functional component that take some props as input and returns
- * a `JSX.Element`.
- **/
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type FC<P extends Record<string, unknown> = {}> = (
-  props: P,
-) => JSX.Element;
-
-/**
  * Creates an `JSX.Element`.
  *
  * @param tag The JSX tag of the element
  * @param properties The properties of the JSX element
  * @param children The children of the JSX element.
  */
-export function createElement(
-  tag: string | FC,
-  properties: Record<string, JSX.Value> | Record<string, unknown>,
-  ...children: JSX.Children
-): JSX.Element {
+function createElement(tag: string | JSX.FC, props: JSX.Props): JSX.Element {
   if (typeof tag === 'string') {
-    const props = (properties ?? {}) as Record<string, JSX.Value>;
-    return new IntrinsicElement(props, children, tag);
+    return new IntrinsicElement(tag, props);
   }
 
   if (typeof tag === 'function') {
-    const props = (properties ?? {}) as Record<string, unknown>;
-    if (tag === Fragment) return Fragment({ children });
-    return new FunctionElement(props, children, tag);
+    return new FunctionElement(tag, props);
   }
 
   const message = `Invalid JSX Element: it must be a tag (string) or a component (function).`;
@@ -1363,80 +1344,45 @@ export function createElement(
 }
 
 /**
- * Creates an `JSX.FragmentElement`.
+ * Returns the children of the fragment.
+ * @param props The JSX Children
+ */
+function Fragment(props: JSX.Props): JSX.Children {
+  return props.children;
+}
+
+/**
+ * Render an `JSX` tree into a string.
  *
- * @param children The children of the element.
+ * @param root The root of the tree to be rendered
  */
-export function Fragment(props: {
-  children: JSX.Children;
-}): JSX.FragmentElement {
-  return new FragmentElement({}, props.children);
-}
-
-/**
- * Renders the `JSX.Element` into a string.
- * @param element The `JSX.Element`.
- */
-export async function render(element: JSX.Element): Promise<string> {
-  const current = await element;
-  return await current.render();
-}
-
-export default { createElement, Fragment, render };
-
-/**
- * Represents an `JSX` fragment
- */
-class FragmentElement implements JSX.FragmentElement {
-  readonly props: Record<string, unknown>;
-  readonly children: JSX.Children;
-
-  constructor(props: Record<string, unknown>, children: JSX.Children) {
-    this.props = props;
-    this.children = children;
-  }
-
-  async render(): Promise<string> {
-    const promises = this.children.map((child) => renderChild(child));
-    const renderings = await Promise.all(promises);
-    return renderings.join('');
-  }
+function render(root: JSX.Children): Promise<string> {
+  return renderChildren(root);
 }
 
 /**
  * Represents an `JSX` instrinsic element
  */
 class IntrinsicElement implements JSX.IntrinsicElement {
-  readonly props: Record<string, JSX.Value>;
-  readonly children: JSX.Children;
   readonly tag: string;
+  readonly props: JSX.Props;
 
-  constructor(
-    props: Record<string, JSX.Value>,
-    children: JSX.Children,
-    name: string,
-  ) {
+  constructor(tag: string, props: JSX.Props) {
     this.props = props;
-    this.children = children;
-    this.tag = name;
+    this.tag = tag;
   }
 
   async render(): Promise<string> {
-    const attributesPromises = Object.entries(this.props).map(renderAttribute);
-    const childrenPromises = this.children.map(renderChild);
-
-    const [attributes, children] = await Promise.all([
-      Promise.all(attributesPromises),
-      Promise.all(childrenPromises),
+    const [attributes, contents] = await Promise.all([
+      renderProps(this.props),
+      renderChildren(this.props.children),
     ]);
 
     const divider = attributes.length === 0 ? '' : ' ';
-    const attr = attributes.join(' ');
-    const contents = children.join('');
 
-    return children.length === 0 && isVoidElement(this.tag)
-      ? `<${this.tag}${divider}${attr}/>`
-      : `<${this.tag}${divider}${attr}>${contents}</${this.tag}>`;
+    return contents.length === 0 && isVoidTag(this.tag)
+      ? `<${this.tag}${divider}${attributes}/>`
+      : `<${this.tag}${divider}${attributes}>${contents}</${this.tag}>`;
   }
 }
 
@@ -1444,62 +1390,66 @@ class IntrinsicElement implements JSX.IntrinsicElement {
  * Represents an `JSX` functional element
  */
 class FunctionElement implements JSX.FunctionElement {
-  readonly props: Record<string, unknown>;
-  readonly children: JSX.Children;
-  readonly function: FC;
+  readonly fn: JSX.FC;
+  readonly props: JSX.Props;
 
-  constructor(
-    props: Record<string, unknown>,
-    children: JSX.Children,
-    component: FC,
-  ) {
+  constructor(fn: JSX.FC, props: JSX.Props) {
+    this.fn = fn;
     this.props = props;
-    this.children = children;
-    this.function = component;
   }
 
   async render(): Promise<string> {
-    if (!('children' in this.props)) this.props.children = this.children;
-    const element = await this.function.call(null, this.props);
-    return await element.render();
+    const element = await this.fn.call(null, this.props);
+    return renderChildren(element);
   }
 }
 
 /**
- * Render a child into a string.
+ * Render children into a string.
  *
- * @param child The child to be rendered
+ * @param children The child to be rendered
  */
-async function renderChild(child: JSX.Child): Promise<string> {
-  if (child == null) return '';
-  if (typeof child === 'string') return child;
-  if (typeof child === 'boolean') return child ? 'true' : 'false';
-  if (typeof child === 'bigint') return child.toString(10);
-  if (typeof child === 'number') return child.toString(10);
-  if (isDate(child)) return child.toISOString();
-  if (isIterable(child)) {
-    const promises = Array.from(child, (element) => renderChild(element));
+async function renderChildren(children: JSX.Children): Promise<string> {
+  if (children == null) return '';
+  if (typeof children === 'string') return children;
+  if (typeof children === 'boolean') return children ? 'true' : 'false';
+  if (typeof children === 'bigint') return children.toString(10);
+  if (typeof children === 'number') return children.toString(10);
+  if (isDate(children)) return children.toISOString();
+  if (isIterable(children)) {
+    const promises = Array.from(children, (item) => renderChildren(item));
     const renderings = await Promise.all(promises);
     return renderings.join('');
   }
-  if (isPromise(child)) {
-    return child.then((value) => renderChild(value));
+  if (isPromise(children)) {
+    return children.then((value) => renderChildren(value));
   }
-  if (isElement(child)) return await child.render();
+  if (isElement(children)) return await children.render();
   return '';
+}
+
+/**
+ * Render a JSX props into a string.
+ *
+ * @param props The props of the element
+ */
+async function renderProps(props: JSX.Props): Promise<string> {
+  const promises = Object.entries(props).map(renderAttribute);
+  const attributes = await Promise.all(promises);
+  return attributes.filter((attr) => attr.length > 0).join(' ');
 }
 
 /**
  * Render an JSX attribute into a string.
  *
- * @param name The name of the attribute
- * @param value The value of the attribute
+ * @param attribute A pair of a name and a value
  */
-async function renderAttribute(entry: [string, JSX.Value]): Promise<string> {
-  const attribute = await renderValue(entry[1]);
-  if (attribute == null) return '';
-  const escaped = escapeAttribute(attribute);
-  return `${entry[0]}="${escaped}"`;
+async function renderAttribute(attribute: [string, unknown]): Promise<string> {
+  if (attribute[0] === 'children') return '';
+  const value = await renderValue(attribute[1]);
+  if (value == null) return '';
+  const escaped = escapeAttribute(value);
+  return `${attribute[0]}="${escaped}"`;
 }
 
 /**
@@ -1507,7 +1457,7 @@ async function renderAttribute(entry: [string, JSX.Value]): Promise<string> {
  *
  * @param value An `JSX.Value`
  */
-async function renderValue(value: JSX.Value): Promise<string | null> {
+async function renderValue(value: unknown): Promise<string | null> {
   if (value == null) return null;
   if (typeof value === 'string') return value;
   if (typeof value === 'boolean') return value ? '' : null;
@@ -1551,9 +1501,7 @@ function isElement(value: unknown): value is JSX.Element {
   return (
     typeof value === 'object' &&
     value !== null &&
-    (value instanceof FragmentElement ||
-      value instanceof IntrinsicElement ||
-      value instanceof FunctionElement)
+    (value instanceof IntrinsicElement || value instanceof FunctionElement)
   );
 }
 
@@ -1591,7 +1539,7 @@ function isDate(value: unknown): value is Date {
   return typeof value === 'object' && value !== null && value instanceof Date;
 }
 
-const voidElements = {
+const voidTags = {
   html: [
     'area',
     'base',
@@ -1616,6 +1564,8 @@ const voidElements = {
  * Checks if the tag is a void element or not.
  * @param tag
  */
-function isVoidElement(tag: string): boolean {
-  return voidElements.html.includes(tag);
+function isVoidTag(tag: string): boolean {
+  return voidTags.html.includes(tag);
 }
+
+export { createElement, Fragment, isElement, render };

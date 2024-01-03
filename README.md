@@ -22,25 +22,8 @@ If you are using Typescript, you'll need to set the JSX properties your
 
 ```json
 {
-  "jsx": "react",
-  "jsxFactory": "Angico.createElement",
-  "jsxFragmentFactory": "Angico.Fragment"
-}
-```
-
-If you are using ESLint as your linter with the `@typescript-eslint/recommended`
-plugin, you can face an error that the `Angico` variable is not used, due
-the ESLint not being able to check after the transpilation. You can safely
-ignore these errors by setting up this config on your ESlint config file.
-
-```json
-{
-  "rules": {
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      { "varsIgnorePattern": "Angico" }
-    ]
-  }
+  "jsx": "react-jsx",
+  "jsxImportSource": "@ibyra/angico"
 }
 ```
 
@@ -48,10 +31,7 @@ If you are using other transpiler, like [Babel][babel-jsx], you can use these
 pragma comments on the top of the your source file.
 
 ```jsx
-/** @jsx Angico.createElement */
-/** @jsxFrag Angico.Fragment */
-
-import Angico from '@ibyra/angico';
+/** @jsxImportSource @ibyra/angico */
 
 var descriptions = items.map((item) => (
   <>
@@ -68,8 +48,6 @@ JSX library. You can create and compose your components/fragments, even if they
 are asynchronous.
 
 ```tsx
-import Angico from '@ibyra/angico';
-
 function Input(props: { type: 'text' | 'number' }): JSX.Element {
   return <input type={props.type} />;
 }
@@ -108,14 +86,14 @@ console.log(box); // FunctionElement { ... }
 ```
 
 As you can see, the JSX does not return an rendered version, but a instance of
-`FunctionElement`. This is because Angico does not renders anything immediately,
-only when it is required to do so.
+`FunctionElement` instead. This is because Angico does not renders anything
+immediately, only when it is required to do so.
 
 You can request an JSX element to render into a string using the `render`
 function, also available on Angico package.
 
 ```tsx
-import Angico, { render } from '@ibyra/angico';
+import { render } from '@ibyra/angico';
 
 // ...
 
@@ -133,10 +111,6 @@ const expected = `<div style="height: 100px; width: 100px" class="box"><input ty
 
 assert(rendered === expected);
 ```
-
-Usually, you'll only need to call `render` on the boundaries of your
-application, when everything is ready to be rendered and sent as a HTML
-response.
 
 ### HTML, SVG, XML…
 

@@ -1,12 +1,17 @@
-import Angico, { render } from './index';
+import { render } from './index';
 import { expect, it, describe } from 'bun:test';
 
 function timeout(ms: number): Promise<number> {
   return new Promise((resolve) => setTimeout(resolve, ms, ms));
 }
 
-function Input(props: { type: 'text' | 'number' }): JSX.Element {
-  return <input type={props.type} />;
+type InputProps = {
+  type: 'text' | 'number';
+  id?: string;
+};
+
+function Input(props: InputProps): JSX.Element {
+  return <input type={props.type} id={props.id} />;
 }
 
 type BoxProps = {
@@ -113,8 +118,8 @@ describe('render tests', () => {
   it('should render async JSX tags with children', async () => {
     const element = (
       <AsyncBox height="100" width="100">
-        <Input type="number" />
-        Type a number.
+        <label for="input">Number</label>
+        <Input type="number" id="input" />
         {timeout(10).then(() => (
           <button type="submit">Submit</button>
         ))}
@@ -122,7 +127,7 @@ describe('render tests', () => {
     );
     const rendering = await render(element);
     expect(rendering).toBe(
-      `<div style="height: 100px; width: 100px" class="box"><input type="number"/>Type a number.<button type="submit">Submit</button></div>`,
+      `<div style="height: 100px; width: 100px" class="box"><label for="input">Number</label><input type="number" id="input"/><button type="submit">Submit</button></div>`,
     );
   });
 
