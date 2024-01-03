@@ -300,4 +300,12 @@ function isVoidTag(tag: string): boolean {
   return voidTags.html.includes(tag);
 }
 
-export { createElement, Fragment, isElement, render };
+export {
+  createElement as jsx,
+  createElement as jsxs,
+  createElement as jsxDEV,
+  createElement,
+  Fragment,
+  isElement,
+  render,
+};

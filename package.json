@@ -12,9 +12,18 @@
     "dist"
   ],
   "exports": {
-    ".": "./dist/index.js",
-    "./jsx-runtime": "./dist/jsx-runtime.js",
-    "./jsx-dev-runtime": "./dist/jsx-dev-runtime.js"
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./jsx-runtime": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./jsx-dev-runtime": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
   },
   "publishConfig": {
     "access": "public"
@@ -34,7 +43,7 @@
   "homepage": "https://github.com/ibyra/angico#readme",
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "tsup src/index.ts src/jsx-runtime.ts src/jsx-dev-runtime.ts --format cjs,esm --dts",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
     "test": "bun test --coverage",
     "format": "prettier ./src/**/*.{ts,tsx} --ignore-path .gitignore --write",
     "lint": "eslint src/**/*.{ts,tsx} --ignore-path .gitignore",
@@ -49,6 +58,7 @@
     "@changesets/cli": "^2.26.2",
     "@types/bun": "latest",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
     "bun-plugin-dts": "^0.2.1",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
@@ -56,7 +66,8 @@
     "prettier": "^3.1.1",
     "tsup": "^8.0.1",
     "typedoc": "^0.25.3",
-    "typedoc-plugin-markdown": "^3.17.1"
+    "typedoc-plugin-markdown": "^3.17.1",
+    "typescript": "^5.3.3"
   },
   "peerDependencies": {
     "typescript": "^5.3.3"
