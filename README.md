@@ -189,8 +189,10 @@ declare global {
 
 ## Roadmap
 
-- Support all SVG elements and attributes;
-- Support all MathML elements and attributes;
+- Improve HTML elements and attributes typings;
+- Improve support for WAI-ARIA attributes typings;
+- Support all SVG elements and attributes typings;
+- Support all MathML elements and attributes typings;
 - Support streamed rendering;
 
 ## Contributing
