@@ -1,5 +1,11 @@
 # @ibyra/angico
 
+## 1.0.5
+
+### Patch Changes
+
+- c5b67df: Improve bundle delivery
+
 ## 1.0.4
 
 ### Patch Changes
