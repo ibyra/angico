@@ -1,6 +1,6 @@
 {
   "name": "@ibyra/angico",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Ibyra",
   "description": "A small JSX async-rendering library.",
   "license": "MIT",
