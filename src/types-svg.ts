@@ -51,7 +51,7 @@ declare global {
     }
 
     interface SVGPresentationAttributes {
-      ['alignment-baseline']:
+      ['alignment-baseline']?:
         | 'auto'
         | 'baseline'
         | 'before-edge'
@@ -65,17 +65,17 @@ declare global {
         | 'hanging'
         | 'mathematical'
         | 'inherit';
-      ['baseline-shift']: string;
+      ['baseline-shift']?: string;
       ['clip-path']?: string;
       ['clip-rule']?: 'nonzero' | 'evenodd';
       ['color']?: string;
       ['color-interpolation']?: 'auto' | 'sRGB' | 'linearRGB';
-      ['color-interpolation-filters']: 'auto' | 'sRGB' | 'linearRGB';
+      ['color-interpolation-filters']?: 'auto' | 'sRGB' | 'linearRGB';
       ['color-rendering']?: SVGRendering;
       ['cursor']?: string;
       ['direction']?: Dir;
       ['display']?: string;
-      ['dominant-baseline']:
+      ['dominant-baseline']?:
         | 'auto'
         | 'text-bottom'
         | 'alphabetic'
@@ -150,7 +150,7 @@ declare global {
         | 'line-through'
         | 'blink';
       ['text-rendering']?: SVGRendering;
-      ['transform']: string;
+      ['transform']?: string;
       ['visibility']?: 'visible' | 'hidden' | 'collapse';
       ['word-spacing']?: string;
       ['writing-mode']?: 'lr-tb' | 'rl-tb' | 'tb-rl' | 'lr' | 'rl' | 'tb';
