@@ -116,7 +116,7 @@ const expected = `<div style="height: 100px; width: 100px" class="box"><input ty
 assert(rendered === expected);
 ```
 
-### HTML, SVG, XML…
+### HTML, SVG, MathML, XML…
 
 You can use Angico to render any XML markup you desire. You can use SVG out of
 the box!
@@ -156,8 +156,8 @@ export function EnvelopeSimple(props: IconProps): JSX.Element {
 ```
 
 > [!WARNING]
-> The current support for SVG is limited, only a few elements/attributes are
-> defined. We aim to improve the support in the future.
+> The current support for SVG and MathML is limited, only a few elements and
+> attributes are defined. We aim to improve the support in the future.
 
 ### Extending type definitions
 
@@ -189,7 +189,8 @@ declare global {
 
 ## Roadmap
 
-- Support all SVG-related tags/attributes;
+- Support all SVG elements and attributes;
+- Support all MathML elements and attributes;
 - Support streamed rendering;
 
 ## Contributing

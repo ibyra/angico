@@ -12,11 +12,9 @@
     "dist"
   ],
   "exports": {
-    ".": {
-      "default": "./dist/index.js",
-      "/jsx-runtime": "./dist/jsx-runtime",
-      "/jsx-dev-runtime": "./dist/jsx-dev-runtime"
-    }
+    ".": "./dist/index.js",
+    "./jsx-runtime": "./dist/jsx-runtime.js",
+    "./jsx-dev-runtime": "./dist/jsx-dev-runtime.js"
   },
   "publishConfig": {
     "access": "public"
