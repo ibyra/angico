@@ -1,5 +1,11 @@
 # @ibyra/angico
 
+## 1.0.6
+
+### Patch Changes
+
+- 0d93d7b: Add ignore-sync and type checking
+
 ## 1.0.5
 
 ### Patch Changes
